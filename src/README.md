@@ -1,4 +1,4 @@
-# 🚀 FixFlow: Enterprise-Grade Task Management API
+# 🚀 FixFlow
 
 FixFlow คือระบบ Backend API สำหรับการจัดการ Task ในรูปแบบ Kanban Board ที่เน้นความถูกต้องของข้อมูล (Data Integrity) และความปลอดภัยสูงสุด พัฒนาด้วย Laravel 11 บน Docker Environment
 
