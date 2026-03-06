@@ -1,7 +1,65 @@
-🚀 FixFlow: Enterprise-Grade Task Management APIRobust Backend Architecture for High-Integrity Kanban SystemsFixFlow คือระบบ Backend API สำหรับการจัดการ Task ในรูปแบบ Kanban Board (Jira Clone) ที่ถูกออกแบบมาโดยเน้นความถูกต้องของข้อมูล (Data Integrity) และความปลอดภัยสูงสุด พัฒนาบนโครงสร้าง Docker Containerization เพื่อความง่ายในการ Scale และ Deploy🛠️ Technical Architect & High-Level Features🔐 Security & IdentityJWT Authentication: ระบบยืนยันตัวตนที่ปลอดภัยและ Stateless ด้วย JSON Web TokenDeep MIME Validation: ระบบตรวจสอบไฟล์อัปโหลดลึกถึงเนื้อหาจริง (Content-based Check) เพื่อป้องกัน Malicious Files เช่น .php หรือ .exe💎 Data Integrity (Senior Level)Atomic Transactions: การใช้ DB::transaction ครอบคลุม Business Logic ที่ซับซ้อน เพื่อป้องกันข้อมูลไม่ตรงกัน (Data Inconsistency) ในกรณีที่ระบบทำงานผิดพลาดกะทันหันPessimistic Locking: ป้องกันเลขงาน (Task Number) ซ้ำซ้อนด้วย lockForUpdate() เพื่อจัดการสภาวะการเข้าถึงพร้อมกันสูง (High Concurrency)🤖 System Automation & MonitoringEloquent Observer Pattern: แยกส่วนการบันทึก Activity Log ออกจาก Logic หลัก เพื่อสร้าง Audit Trail ที่สะอาดและเป็นระบบComplex Data Modeling: ออกแบบ Schema ที่รองรับความสัมพันธ์แบบ Workspace > Project > Board > Task > Comments/Attachments📦 Tech Stack & ToolsFramework: Laravel 11Database: PostgreSQL / MySQL (Managed via DBeaver)Infrastructure: Docker & Docker ComposeTesting: Bruno / Postman🚀 Getting StartedClone & Environment SetupBashgit clone https://github.com/yourusername/fixflow-api.git
-cd fixflow-api
-cp .env.example .env
-Container ManagementBashdocker-compose up -d
-Database & Storage InitializationBashdocker exec -it task-app php artisan migrate
+# 🚀 FixFlow: Enterprise-Grade Task Management API
+
+FixFlow คือระบบ Backend API สำหรับการจัดการ Task ในรูปแบบ Kanban Board ที่เน้นความถูกต้องของข้อมูล (Data Integrity) และความปลอดภัยสูงสุด พัฒนาด้วย Laravel 11 บน Docker Environment
+
+## 🛠️ Technical Architect & Highlights
+
+- **🔐 Security**: ระบบยืนยันตัวตนด้วย JWT และการตรวจสอบ MIME Type ไฟล์อัปโหลดเชิงลึก (Deep Check) เพื่อความปลอดภัย
+
+- **💎 Data Integrity**: ใช้ Atomic Transactions และ Pessimistic Locking (lockForUpdate) เพื่อป้องกัน Data Inconsistency และ Race Condition
+
+- **🤖 Automation**: ระบบ Activity Log (Audit Trail) อัตโนมัติผ่าน Eloquent Observers แยกส่วน Logic การบันทึกประวัติออกจาก Business Logic หลัก
+
+- **📊 Complex Modeling**: การจัดการความสัมพันธ์แบบ Workspace > Project > Board > Task > Comments/Attachments
+
+## 📂 Project Structure
+
+เพื่อให้ผู้พัฒนาท่านอื่นเข้าใจโครงสร้างโปรเจกต์ได้รวดเร็ว:
+
+```
+.
+├── docker/                 # Docker configuration files (PHP, Web Server, DB)
+├── src/                    # Laravel Application Source Code
+│   ├── app/
+│   │   ├── Http/Controllers/Api/  # RESTful API Controllers
+│   │   ├── Models/                # Eloquent Models with Relationships
+│   │   └── Observers/             # Event Observers for Activity Logging
+│   ├── database/migrations/       # Database Schema Definitions
+│   └── routes/api.php             # API Route Definitions
+└── docker-compose.yml      # Multi-container Docker orchestration
+```
+
+## 📦 Tech Stack
+
+- **Framework**: Laravel 11
+- **Database**: PostgreSQL / MySQL (Managed via DBeaver)
+- **Containerization**: Docker & Docker Compose
+- **API Testing**: Bruno / Postman
+
+## 🚦 Getting Started
+
+### Clone Project
+
+```bash
+git clone https://github.com/Nattapatcha/fixflow.git
+```
+
+### Environment Setup
+
+```bash
+cp src/.env.example src/.env
+```
+
+### Spin up Containers
+
+```bash
+docker-compose up -d
+```
+
+### Initial Setup
+
+```bash
+docker exec -it task-app php artisan migrate
 docker exec -it task-app php artisan storage:link
-📍 Key API EndpointsMethodEndpointDescriptionPOST/api/loginยืนยันตัวตนและรับ Bearer TokenPOST/api/tasksสร้าง Task พร้อมคำนวณ Sequence Number อัตโนมัติ (Atomic)PATCH/api/tasks/{id}อัปเดตสถานะงานและบันทึกประวัติการเปลี่ยนแปลงอัตโนมัติPOST/api/attachmentsอัปโหลดไฟล์แนบพร้อมระบบตรวจสอบความปลอดภัยขั้นสูง💡 Why FixFlow?ในฐานะผู้พัฒนาที่ได้รับเกียรตินิยมอันดับ 1 ด้านวิศวกรรมคอมพิวเตอร์ ผมให้ความสำคัญกับ Data Quality และ System Reliability ซึ่งเป็นหัวใจหลักของทั้งงาน Backend และ Data Engineering โปรเจกต์นี้จึงถูกสร้างขึ้นด้วยมาตรฐานระดับ Enterprise เพื่อแสดงถึงทักษะในการออกแบบระบบที่รองรับการใช้งานจริงในองค์กร
+```
+
