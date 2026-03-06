@@ -1,31 +1,6 @@
-ระบบ Backend API สำหรับจัดการงานในรูปแบบ Kanban Board พัฒนาด้วย Laravel 11 บน Docker Environment
-
-🚀 Key Features & Technical Highlights
-Authentication & Security:
-
-ระบบยืนยันตัวตนด้วย JWT (JSON Web Token)
-
-File Upload Security: ตรวจสอบ MIME Type และเนื้อหาไฟล์จริง (Deep Check) เพื่อป้องกันไฟล์อันตราย
-
-Data Integrity & Consistency:
-
-Database Transactions: ใช้ DB::transaction ครอบคลุมจุดสำคัญ เช่น การสร้าง Project พร้อม Board และการลบ Attachment พร้อมไฟล์ใน Storage เพื่อป้องกัน Data Inconsistency
-
-Pessimistic Locking: ใช้ lockForUpdate() ในการคำนวณ Task Number (เช่น E-C-1) เพื่อป้องกันการเกิดเลขซ้ำในกรณี Race Condition
-
-System Automation:
-
-Eloquent Observers: ใช้ Observer Pattern ในการทำ Activity Log บันทึกประวัติการขยับสถานะงานอัตโนมัติ (Audit Trail)
-
-Advanced Relationships:
-
-จัดการโครงสร้างข้อมูลแบบ Workspace > Project > Board > Task > Comments/Attachments ด้วย Eloquent Relationship
-
-🛠 Tech Stack
-Framework: Laravel 11
-
-Database: PostgreSQL / MySQL (Managed via DBeaver)
-
-Containerization: Docker & Docker Compose
-
-API Testing: Bruno / Postman
+ระบบ Backend API สำหรับการจัดการ Task ในรูปแบบ Kanban Board (Jira Clone) ที่เน้นความถูกต้องของข้อมูล (Data Integrity) และความปลอดภัยสูงสุด พัฒนาด้วยเทคโนโลยี Laravel 11 บนโครงสร้าง Docker Containerization🛠️ Technical Architect & High-Level Features🔐 Security & IdentityJWT Authentication: ระบบยืนยันตัวตนที่ปลอดภัยด้วย JSON Web TokenDeep MIME Validation: ตรวจสอบไฟล์ที่อัปโหลดลึกถึงเนื้อหาจริง (Content-based Check) เพื่อป้องกัน Malicious Files (.php, .exe)💎 Data Integrity (Senior Level)Atomic Transactions: ใช้ DB::transaction ครอบคลุมการทำงานที่เกี่ยวเนื่องกัน เพื่อป้องกัน Data InconsistencyPessimistic Locking: ป้องกันเลขงาน (Task Number) ซ้ำซ้อนด้วย lockForUpdate() ในสภาวะที่มีการเข้าถึงพร้อมกัน (High Concurrency)🤖 System Automation & MonitoringEloquent Observer Pattern: ระบบ Activity Log อัตโนมัติ (Audit Trail) บันทึกทุกความเคลื่อนไหวของงานโดยไม่ปนกับ Business Logic หลักDatabase Relationships: ออกแบบโครงสร้างข้อมูลที่ซับซ้อน (Workspace > Project > Board > Task > Comments/Attachments)📦 Tech StackCore: Laravel 11Database: PostgreSQL / MySQLInfrastructure: Docker & Docker ComposeAPI Tools: Bruno / Postman🛠️ Getting StartedClone the projectBashgit clone https://github.com/yourusername/fixflow-api.git
+Setup EnvironmentBashcp .env.example .env
+Spin up ContainersBashdocker-compose up -d
+Run Migrations & Storage LinkBashdocker exec -it task-app php artisan migrate
+docker exec -it task-app php artisan storage:link
+📍 Key API EndpointsMethodEndpointDescriptionPOST/api/loginรับ JWT Token เพื่อเข้าใช้งานPOST/api/tasksสร้าง Task ใหม่พร้อมรันเลข sequence อัตโนมัติPATCH/api/tasks/{id}อัปเดตงานและบันทึก Activity Log อัตโนมัติPOST/api/attachmentsอัปโหลดไฟล์แนบพร้อมระบบตรวจสอบความปลอดภัย
