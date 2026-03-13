@@ -16,6 +16,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/workspaces', [WorkspaceController::class, 'store']);
     // เพิ่ม API สำหรับ Project
     Route::post('/projects', [ProjectController::class, 'store']);
+    Route::get('/projects', [ProjectController::class, 'index']);
     // API สำหรับสร้างงาน
     Route::post('/tasks', [TaskController::class, 'store']);
     Route::get('/tasks', [TaskController::class, 'index']);
@@ -27,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
             ->get();
     });
     Route::patch('/tasks/{id}', [TaskController::class, 'update']);
+    Route::get('/boards', [BoardController::class, 'index']);
     Route::post('/boards', [BoardController::class, 'store']);
     Route::get('/tasks/{task}/comments', [CommentController::class, 'index']);  // ดึงคอมเมนต์ทั้งหมดของงานนี้
     Route::post('/tasks/{task}/comments', [CommentController::class, 'store']); // เพิ่มคอมเมนต์ใหม่
