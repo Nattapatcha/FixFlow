@@ -9,31 +9,45 @@ class AuthController extends Controller
 {
     //
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    // 1. พยายามตรวจสอบ User ด้วย JWT
-    if (!$token = auth('api')->attempt($credentials)) {
-        return response()->json(['error' => 'Unauthorized'], 401);
+        // 1. พยายามตรวจสอบ User ด้วย JWT
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // 2. สร้าง Cookie ที่มีคุณสมบัติ HttpOnly
+        $cookie = cookie(
+            'token',                               // ชื่อ Cookie
+            $token,                                // ค่า Token ที่ได้
+            auth('api')->factory()->getTTL(),      // อายุ (นาที) เท่ากับค่า TTL ใน config
+            '/',                                   // Path
+            null,                                  // Domain
+            false,                                 // Secure (ถ้าเป็น HTTPS ให้ปรับเป็น true)
+            true,                                  // HttpOnly (สำคัญที่สุด! ป้องกัน JavaScript เข้าถึง)
+            false,                                 // Raw
+            'Lax'                                  // SameSite (ช่วยป้องกัน CSRF)
+        );
+
+        // 3. ส่ง JSON กลับไปพร้อมแนบ Cookie (ไม่ต้องส่ง Token ใน Body แล้ว)
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => auth('api')->user()
+        ])->withCookie($cookie);
     }
+    public function logout()
+    {
+        // 1. สั่งให้ JWT ทำลาย Token ทิ้ง (Invalidate)
+        Auth::guard('api')->logout();
 
-    // 2. สร้าง Cookie ที่มีคุณสมบัติ HttpOnly
-    $cookie = cookie(
-        'token',                               // ชื่อ Cookie
-        $token,                                // ค่า Token ที่ได้
-        auth('api')->factory()->getTTL(),      // อายุ (นาที) เท่ากับค่า TTL ใน config
-        '/',                                   // Path
-        null,                                  // Domain
-        false,                                 // Secure (ถ้าเป็น HTTPS ให้ปรับเป็น true)
-        true,                                  // HttpOnly (สำคัญที่สุด! ป้องกัน JavaScript เข้าถึง)
-        false,                                 // Raw
-        'Lax'                                  // SameSite (ช่วยป้องกัน CSRF)
-    );
+        // 2. สร้างคำสั่งลบ Cookie ที่ชื่อ 'token' ออกจากเบราว์เซอร์
+        $cookie = cookie()->forget('token');
 
-    // 3. ส่ง JSON กลับไปพร้อมแนบ Cookie (ไม่ต้องส่ง Token ใน Body แล้ว)
-    return response()->json([
-        'message' => 'Login successful',
-        'user' => auth('api')->user()
-    ])->withCookie($cookie);
-}
+        // 3. ส่ง Response กลับไปพร้อมกับคำสั่งลบ Cookie
+        return response()->json([
+            'status' => 'success',
+            'message' => 'ออกจากระบบเรียบร้อยแล้ว'
+        ])->withCookie($cookie);
+    }
 }

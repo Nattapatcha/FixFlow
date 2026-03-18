@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AttachmentController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
     // API สำหรับดึงรายชื่อ Workspace ของผู้ใช้ที่ Login อยู่
     Route::get('/workspaces', [WorkspaceController::class, 'index']);
     Route::post('/workspaces', [WorkspaceController::class, 'store']);

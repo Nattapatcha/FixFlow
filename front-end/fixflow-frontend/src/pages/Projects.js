@@ -29,6 +29,19 @@ function Projects() {
         fetchProjects();
     }, []);
 
+    const handleLogout = async () => {
+        try {
+            // 1. ยิง API ไปสั่งให้ Laravel ทำลาย Token และ Cookie ของจริง
+            await api.post('/logout'); 
+        } catch (error) {
+            console.error("Logout error", error);
+        } finally {
+            // 2. ฉีกป้ายบอกทางใน LocalStorage ทิ้ง (เพื่อให้ React รู้ว่าออกแล้ว)
+            localStorage.removeItem('isAuthenticated');
+            // 3. เตะกลับหน้า Login
+            navigate('/login');
+        }
+    };
     const handleSelectProject = (projectId) => {
         navigate(`/board/${projectId}`);
     };
@@ -61,6 +74,14 @@ function Projects() {
     return (
         <div className="container-fluid bg-light min-vh-100 py-5">
             <div className="container">
+                <div className="d-flex justify-content-end mb-3">
+                    <button 
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={handleLogout}
+                    >
+                        🚪 ออกจากระบบ
+                    </button>
+                </div>
                 {/* Header Row: มีปุ่มสร้างโปรเจกต์อยู่มุมขวาเสมอ */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h2 className="fw-bold text-secondary m-0">🗂️ เลือกโปรเจกต์ของคุณ</h2>
